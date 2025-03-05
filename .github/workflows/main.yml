@@ -1,0 +1,15 @@
+name: Free RDP Windows
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Setup RDP
+        run: |
+          net user rdpuser Password123 /add
+          net localgroup Administrators rdpuser /add
+          reg add "HKLM\System\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
+          reg add "HKLM\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v UserAuthentication /t REG_DWORD /d 0 /f
+          netsh advfirewall firewall set rule group="Remote Desktop" new enable=Yes
+          echo "RDP aktif, gunakan IP GitHub Actions!"
